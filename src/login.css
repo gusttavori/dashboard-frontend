@@ -1,0 +1,91 @@
+/* login.css */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #e3eafc, #9dafdb);
+  overflow: hidden;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.form-box {
+  background: #f4f7ff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 25px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.input {
+  width: 90%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: 1px solid #dfe6e9;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.button {
+  width: 80%;
+  padding: 12px;
+  margin-top: 20px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #2980b9;
+}
+
+.button-outline {
+  width: 80%;
+  padding: 12px;
+  margin-top: 12px;
+  background: transparent;
+  border: 2px solid #3498db;
+  color: #3498db;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button-outline:hover {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 10px;
+}

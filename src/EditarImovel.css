@@ -1,0 +1,89 @@
+.editar-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1E3A5F;
+}
+
+.formulario label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.formulario input,
+.formulario select,
+.formulario textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.form-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* espaço entre checkbox e texto */
+  cursor: pointer; /* muda o cursor ao passar em cima */
+  user-select: none;
+}
+
+.form-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0; /* remove margens padrão */
+  vertical-align: middle; /* alinha verticalmente */
+}
+
+textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+button {
+  margin-top: 2rem;
+  background: #1e66c6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #154a8a;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+  user-select: none;
+}
+
+.breadcrumb a {
+  color: #007bff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.breadcrumb span {
+  margin: 0 8px;
+  color: #888;
+}
