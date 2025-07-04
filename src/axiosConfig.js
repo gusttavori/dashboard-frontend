@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   // CORREÇÃO: Apontar para o seu backend local
-  baseURL: 'http://localhost:3001', 
+  baseURL: 'https://api-geral-g6bc.onrender.com/', 
 });
 
 // Interceptor para adicionar o token JWT no header Authorization
