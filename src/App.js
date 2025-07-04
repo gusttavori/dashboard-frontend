@@ -8,6 +8,7 @@ import './App.css';
 const MySwal = withReactContent(Swal);
 
 function App() {
+  // --- CORREÇÃO 1: Removido 'condominio' do estado inicial ---
   const [form, setForm] = useState({
     titulo: '',
     descricao: '',
@@ -21,7 +22,7 @@ function App() {
     area: '',
     imagens: [],
     piscina: false,
-    valorCondominio: '',
+    valorCondominio: '', // Apenas o valor é necessário
     garagem: false,
     destaque: false,
   });
@@ -114,7 +115,7 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token'); // Corrigido para remover 'token'
     navigate('/login');
   };
 
@@ -124,12 +125,10 @@ function App() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const { titulo, descricao, preco, cidade, bairro, tipo, finalidade, area, imagens } = form;
+    const { titulo, descricao, preco, cidade, bairro, tipo, finalidade, dormitorios, banheiros, area, imagens } = form;
 
-    // --- MODIFICAÇÃO 1: Removida a validação de 'dormitorios' e 'banheiros' ---
-    // Agora eles não são mais obrigatórios.
-    if (!titulo || !descricao || !preco || !cidade || !bairro || !tipo || !finalidade || !area || imagens.length === 0) {
-      return MySwal.fire({ icon: 'warning', title: 'Campos incompletos', text: 'Preencha todos os campos obrigatórios e selecione ao menos uma imagem.' });
+    if (!titulo || !descricao || !preco || !cidade || !bairro || !tipo || !finalidade || !dormitorios || !banheiros || !area || imagens.length === 0) {
+      return MySwal.fire({ icon: 'warning', title: 'Campos incompletos', text: 'Preencha todos os campos e selecione ao menos uma imagem.' });
     }
 
     try {
@@ -151,18 +150,18 @@ function App() {
       const token = localStorage.getItem('token');
       const precoFinal = form.preco.toUpperCase() === 'CONSULTAR VALOR' ? form.preco : parseFloat(form.preco);
 
-      // --- MODIFICAÇÃO 2: Payload ajustado para campos opcionais ---
-      // Se 'dormitorios' ou 'banheiros' estiverem vazios, serão enviados como 'undefined'
-      // e omitidos do JSON final, o que é ideal para campos opcionais no backend.
+      // --- CORREÇÃO 2: Payload final simplificado ---
       const payloadFinal = {
         ...form,
         preco: precoFinal,
-        dormitorios: form.dormitorios ? parseInt(form.dormitorios, 10) : undefined,
-        banheiros: form.banheiros ? parseInt(form.banheiros, 10) : undefined,
+        dormitorios: parseInt(form.dormitorios, 10),
+        banheiros: parseInt(form.banheiros, 10),
         area: parseFloat(form.area),
+        // Envia o valor do condomínio como número, ou null se estiver vazio
         valorCondominio: form.valorCondominio ? parseFloat(form.valorCondominio) : null,
         imagens: urls
       };
+      // O campo 'condominio' não é mais necessário aqui
 
       console.log('Payload enviado para o backend:', payloadFinal);
       await api.post('/imoveis', payloadFinal, { headers: { Authorization: `Bearer ${token}` } });
@@ -189,6 +188,7 @@ function App() {
       buscarImoveis();
 
     } catch (error) {
+      setLoading(false);
       const camposAmigaveis = {
         titulo: 'Título', descricao: 'Descrição', preco: 'Preço', cidade: 'Cidade',
         bairro: 'Bairro', tipo: 'Tipo do imóvel', dormitorios: 'Dormitórios',
@@ -207,8 +207,6 @@ function App() {
         console.error('Erro ao cadastrar imóvel:', error);
         MySwal.fire({ icon: 'error', title: 'Erro desconhecido', text: 'Não foi possível cadastrar o imóvel. Tente novamente.' });
       }
-    } finally {
-        setLoading(false); // Garante que o loading seja desativado
     }
   };
 
@@ -251,8 +249,8 @@ function App() {
           </div>
 
           <div className="form-row">
-            <input name="dormitorios" type="number" placeholder="Dormitórios (Opcional)" value={form.dormitorios} onChange={handleChange} />
-            <input name="banheiros" type="number" placeholder="Banheiros (Opcional)" value={form.banheiros} onChange={handleChange} />
+            <input name="dormitorios" type="number" placeholder="Dormitórios" value={form.dormitorios} onChange={handleChange} />
+            <input name="banheiros" type="number" placeholder="Banheiros" value={form.banheiros} onChange={handleChange} />
             <input name="area" type="number" placeholder="Área (m²)" value={form.area} onChange={handleChange} />
           </div>
 
@@ -261,7 +259,9 @@ function App() {
             <input name="bairro" placeholder="Bairro" value={form.bairro} onChange={handleChange} />
           </div>
           
+          {/* --- CORREÇÃO 3: Formulário simplificado --- */}
           <div className="form-row">
+            {/* Campo opcional para o valor do condomínio */}
             <input name="valorCondominio" type="number" placeholder="Valor do Condomínio (Opcional)" value={form.valorCondominio} onChange={handleChange} />
           </div>
 
@@ -275,6 +275,7 @@ function App() {
               Possui Garagem?
             </label>
           </div>
+          {/* O checkbox de condomínio foi removido */}
 
           <label className={`image-upload ${dragActive ? 'drag-active' : ''}`} onDragEnter={handleDrag} onDragOver={handleDrag} onDragLeave={handleDrag} onDrop={handleDrop}>
             📷 Clique ou arraste a imagem aqui
