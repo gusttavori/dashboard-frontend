@@ -118,8 +118,9 @@ body {
 }
 
 .form textarea {
-  resize: vertical;
+  resize: none; /* Impede que o usuário redimensione manualmente */
   min-height: 80px;
+  overflow-y: hidden; /* Esconde a barra de rolagem vertical que pode aparecer brevemente */
 }
 
 /* Linhas do formulário */

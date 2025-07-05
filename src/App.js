@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import api from './axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -7,8 +7,34 @@ import './App.css';
 
 const MySwal = withReactContent(Swal);
 
+// --- COMPONENTE REUTILIZÁVEL PARA TEXTAREA AUTO-EXPANSÍVEL ---
+// Este componente encapsula a lógica para que o textarea cresça com o conteúdo.
+const AutoResizeTextarea = (props) => {
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      // Reseta a altura para recalcular o tamanho correto
+      textareaRef.current.style.height = 'auto';
+      // Define a nova altura com base no conteúdo
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [props.value]); // Executa sempre que o valor do textarea mudar
+
+  return (
+    <textarea
+      ref={textareaRef}
+      {...props}
+      style={{
+        resize: 'none',       // Impede o redimensionamento manual pelo usuário
+        overflowY: 'hidden',  // Esconde a barra de rolagem que pode aparecer brevemente
+      }}
+    />
+  );
+};
+
+
 function App() {
-  // --- CORREÇÃO 1: Removido 'condominio' do estado inicial ---
   const [form, setForm] = useState({
     titulo: '',
     descricao: '',
@@ -22,7 +48,7 @@ function App() {
     area: '',
     imagens: [],
     piscina: false,
-    valorCondominio: '', // Apenas o valor é necessário
+    valorCondominio: '',
     garagem: false,
     destaque: false,
   });
@@ -115,7 +141,7 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Corrigido para remover 'token'
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
@@ -150,20 +176,16 @@ function App() {
       const token = localStorage.getItem('token');
       const precoFinal = form.preco.toUpperCase() === 'CONSULTAR VALOR' ? form.preco : parseFloat(form.preco);
 
-      // --- CORREÇÃO 2: Payload final simplificado ---
       const payloadFinal = {
         ...form,
         preco: precoFinal,
         dormitorios: parseInt(form.dormitorios, 10),
         banheiros: parseInt(form.banheiros, 10),
         area: parseFloat(form.area),
-        // Envia o valor do condomínio como número, ou null se estiver vazio
         valorCondominio: form.valorCondominio ? parseFloat(form.valorCondominio) : null,
         imagens: urls
       };
-      // O campo 'condominio' não é mais necessário aqui
 
-      console.log('Payload enviado para o backend:', payloadFinal);
       await api.post('/imoveis', payloadFinal, { headers: { Authorization: `Bearer ${token}` } });
       alert('Imóvel cadastrado com sucesso!');
       
@@ -227,7 +249,16 @@ function App() {
       <form className="form" onSubmit={handleSubmit}>
         <fieldset disabled={loading} style={{border: 'none', padding: 0, margin: 0}}>
           <input name="titulo" placeholder="Título" value={form.titulo} onChange={handleChange} />
-          <textarea name="descricao" placeholder="Descrição do Imóvel" value={form.descricao} onChange={handleChange} />
+          
+          {/* --- ALTERAÇÃO AQUI --- */}
+          {/* Substituímos o <textarea> padrão pelo nosso novo componente */}
+          <AutoResizeTextarea
+            name="descricao"
+            placeholder="Descrição do Imóvel"
+            value={form.descricao}
+            onChange={handleChange}
+            rows={3} // Altura inicial (opcional)
+          />
 
           <div className="form-row">
             <select name="finalidade" value={form.finalidade} onChange={handleChange}>
@@ -259,9 +290,7 @@ function App() {
             <input name="bairro" placeholder="Bairro" value={form.bairro} onChange={handleChange} />
           </div>
           
-          {/* --- CORREÇÃO 3: Formulário simplificado --- */}
           <div className="form-row">
-            {/* Campo opcional para o valor do condomínio */}
             <input name="valorCondominio" type="number" placeholder="Valor do Condomínio (Opcional)" value={form.valorCondominio} onChange={handleChange} />
           </div>
 
@@ -275,7 +304,6 @@ function App() {
               Possui Garagem?
             </label>
           </div>
-          {/* O checkbox de condomínio foi removido */}
 
           <label className={`image-upload ${dragActive ? 'drag-active' : ''}`} onDragEnter={handleDrag} onDragOver={handleDrag} onDragLeave={handleDrag} onDrop={handleDrop}>
             📷 Clique ou arraste a imagem aqui
